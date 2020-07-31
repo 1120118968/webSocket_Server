@@ -1,0 +1,51 @@
+!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>websocket demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+WEBSOCKET
+<hr/>
+<h2>Data</h2>
+<input id="input_params" type="text" value='{"id":"01"}'>
+
+<button onclick="sendTo()">Send</button>
+<button onclick="closeSocket()">CloseSocket</button>
+
+<div id="content"><p>content</p></div>
+
+<script>
+    var sock = new SockJS('http://localhost:8080/sockjs');
+
+    function sendTo() {
+        var params = $("#input_params").val();
+        console.log("params:" + params);
+        sock.send(params);
+        $("#content").after($("<span>send</span><br/>"));
+    }
+
+    function closeSocket() {
+        console.log("close socket");
+        sock.close();
+    }
+
+    sock.onopen = function () {
+        console.log('open');
+        sock.send("Hi");
+    };
+
+    sock.onmessage = function (e) {
+        console.log('message', e.data);
+        $("#content").after(e.data);
+    };
+
+    sock.onclose = function () {
+        console.log('close');
+    };
+
+</script>
+</body>
+</html>
